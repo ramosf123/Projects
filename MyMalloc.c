@@ -145,7 +145,7 @@ static void * allocateObject(size_t size)
 				setAllocated(&temp->boundary_tag, ALLOCATED);	
 				return temp;	
 			}else{ // Don't split
-				FreeObject * temp = _freeList;
+				FreeObject * temp = curr;
 				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
 				temp->free_list_node._next->free_list_node._prev = temp->free_list_node._prev;
 				setAllocated(&temp->boundary_tag, ALLOCATED);		
