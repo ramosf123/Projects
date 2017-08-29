@@ -118,6 +118,50 @@ static void * allocateObject(size_t size)
   // Make sure that allocator is initialized
   if (!_initialized)
     initialize();
+        
+	size += sizeof(BoundaryTag);
+	
+	if(size < 32){
+		size = 32;
+	}else{
+		size += 8 % (8 - (size % 8));
+	}
+
+	size += 8 % (8 - (size % 8));
+
+	
+	
+	_freeList = _freeList->free_list_node._next;
+	while(_freeList != &_freeListSentinel){
+		if(getSize(&_freeList->boundary_tag) >= size){
+			//Split the mem
+			if((getSize(&_freeList->boundary_tag) - size) >= 40){
+
+				size_t diff = getSize(&_freeList->boundary_tag) - size;
+				setSize(&_freeList->boundary_tag, diff);
+				FreeObject * temp = (FreeObject *)((char *) &_freeList + diff);
+				setSize(&temp->boundary_tag, size);
+				//add leftObj func.
+				setAllocated(&temp->boundary_tag, ALLOCATED);	
+				
+			}else{ // Don't split
+				FreeObject * temp = _freeList;
+				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
+				temp->free_list_node._next->free_list_node._prev = temp->free_list_node._prev;
+				setAllocated(temp->boundary_tag, ALLOCATED);		
+				return temp;		
+			}
+		}
+		_freeList = _freeList->free_list_node._next;
+	}
+			FreeObject * newChunk = getNewChunk(ARENA_SIZE);	
+			setSize(&newChunk->boundary_tag, ARENA_SIZE - (2 * sizeof(BoundaryTag)));
+			newChunk->boundary_tag._leftObjectSize = 0;
+			setAllocated(&newChunk->boundary_tag, NOT_ALLOCATED);
+			
+			newChunk->free_list.node._next = _freeList;
+			newChunk->free_list_node._prev = _freeList->free_list_node._prev;
+			_freeList->free_list_node._prev = newChunk;
 
   pthread_mutex_unlock(&mutex);
   return getMemoryFromOS(size);
