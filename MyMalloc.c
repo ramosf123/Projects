@@ -116,9 +116,11 @@ static void initialize()
 static void * allocateObject(size_t size)
 {
   // Make sure that allocator is initialized
-  if (!_initialized)
-    initialize();
+  	printf("teset");
+    if (!_initialized)
+    	initialize();
         
+	printf("trest");
 	size += sizeof(BoundaryTag);
 	
 	if(size < 32){
