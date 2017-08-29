@@ -139,8 +139,8 @@ static void * allocateObject(size_t size)
 
 				size_t diff = getSize(&curr->boundary_tag) - size;
 				setSize(&curr->boundary_tag, diff);
-				FreeObject * temp = (FreeObject *)((char *) curr) + diff;
-				setSize(temp->boundary_tag, size);
+				FreeObject * temp = (FreeObject *)((char *) curr + diff);
+				setSize(&temp->boundary_tag, size);
 				//add leftObj func.
 				setAllocated(&temp->boundary_tag, ALLOCATED);	
 				return temp;	
