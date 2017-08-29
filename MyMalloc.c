@@ -125,8 +125,6 @@ static void * allocateObject(size_t size)
 	
 	if(size < 32){
 		size = 32;
-	}else{
-		size += 8 % (8 - (size % 8));
 	}
 
 	size += 8 % (8 - (size % 8));
