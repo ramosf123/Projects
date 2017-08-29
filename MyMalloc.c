@@ -154,15 +154,17 @@ static void * allocateObject(size_t size)
 		}
 		curr = curr->free_list_node._next;
 	}
-			FreeObject * newChunk = getNewChunk(ARENA_SIZE);	
-			setSize(&newChunk->boundary_tag, ARENA_SIZE - (2 * sizeof(BoundaryTag)));
-			newChunk->boundary_tag._leftObjectSize = 0;
-			setAllocated(&newChunk->boundary_tag, NOT_ALLOCATED);
-			
-			newChunk->free_list_node._next = curr->free_list_node._next;
-			newChunk->free_list_node._prev = curr;
-			_freeList->free_list_node._next = curr;
+	
+	FreeObject * newChunk = getNewChunk(ARENA_SIZE);	
+	setSize(&newChunk->boundary_tag, ARENA_SIZE - (2 * sizeof(BoundaryTag)));
+	newChunk->boundary_tag._leftObjectSize = 0;
+	setAllocated(&newChunk->boundary_tag, NOT_ALLOCATED);		
+	newChunk->free_list_node._next = curr->free_list_node._next;
+	newChunk->free_list_node._prev = curr;
+	_freeList->free_list_node._next = curr;
 
+	allocateObject(size);			
+	
   pthread_mutex_unlock(&mutex);
   return getMemoryFromOS(size);
 }
