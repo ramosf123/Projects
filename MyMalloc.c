@@ -146,8 +146,8 @@ static void * allocateObject(size_t size)
 				return temp;	
 			}else{ // Don't split
 				FreeObject * temp = _freeList;
-				temp->free_list_node._prev.free_list_node._next = temp->free_list_node._next;
-				temp->free_list_node._next.free_list_node._prev = temp->free_list_node._prev;
+				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
+				temp->free_list_node._next->free_list_node._prev = temp->free_list_node._prev;
 				setAllocated(&temp->boundary_tag, ALLOCATED);		
 				return temp;		
 			}
@@ -159,9 +159,9 @@ static void * allocateObject(size_t size)
 			newChunk->boundary_tag._leftObjectSize = 0;
 			setAllocated(&newChunk->boundary_tag, NOT_ALLOCATED);
 			
-			newChunk->free_list_node._next = _freeList;
-			newChunk->free_list_node._prev = _freeList->free_list_node._prev;
-			_freeList->free_list_node._prev = newChunk;
+			newChunk->free_list_node._next = curr->free_list_node._next;
+			newChunk->free_list_node._prev = curr;
+			_freeList->free_list_node._next = curr;
 
   pthread_mutex_unlock(&mutex);
   return getMemoryFromOS(size);
