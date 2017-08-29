@@ -159,7 +159,7 @@ static void * allocateObject(size_t size)
 			newChunk->boundary_tag._leftObjectSize = 0;
 			setAllocated(&newChunk->boundary_tag, NOT_ALLOCATED);
 			
-			newChunk->free_list.node._next = _freeList;
+			newChunk->free_list_node._next = _freeList;
 			newChunk->free_list_node._prev = _freeList->free_list_node._prev;
 			_freeList->free_list_node._prev = newChunk;
 
