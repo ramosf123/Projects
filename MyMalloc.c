@@ -133,9 +133,9 @@ static void * allocateObject(size_t size)
 
 	size += sizeof(BoundaryTag);
 	
-//	if(size < 32){
-//		size = 32;
-//	}
+	if(size < 32){
+		size = 32;
+	}
 
 	//pointer used 
 	FreeObject * curr = _freeList;	
