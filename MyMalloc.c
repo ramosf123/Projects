@@ -143,7 +143,7 @@ static void * allocateObject(size_t size)
 				setSize(&temp->boundary_tag, size);
 				//add leftObj func.
 				setAllocated(&temp->boundary_tag, ALLOCATED);	
-				return temp;	
+				return (void*)temp;	
 			}else{ // Don't split
 				FreeObject * temp = curr;
 				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
