@@ -139,7 +139,7 @@ static void * allocateObject(size_t size)
 
 				size_t diff = getSize(&curr->boundary_tag) - size;
 				setSize(&curr->boundary_tag, diff);
-				FreeObject * temp = (FreeObject *)((char *) curr + diff);
+				FreeObject * temp = (FreeObject *)((char *) curr) + diff;
 				setSize(&temp->boundary_tag, size);
 				//add leftObj func.
 				setAllocated(&temp->boundary_tag, ALLOCATED);	
@@ -149,7 +149,7 @@ static void * allocateObject(size_t size)
 				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
 				temp->free_list_node._next->free_list_node._prev = temp->free_list_node._prev;
 				setAllocated(&temp->boundary_tag, ALLOCATED);		
-				return temp;		
+				return (void*)temp;		
 			}
 		}
 		curr = curr->free_list_node._next;
@@ -157,7 +157,7 @@ static void * allocateObject(size_t size)
 	
 	FreeObject * newChunk = getNewChunk(ARENA_SIZE);	
 	setSize(&newChunk->boundary_tag, ARENA_SIZE - (2 * sizeof(BoundaryTag)));
-	newChunk->boundary_tag._leftObjectSize = 0;
+	 
 	setAllocated(&newChunk->boundary_tag, NOT_ALLOCATED);		
 	newChunk->free_list_node._next = curr->free_list_node._next;
 	newChunk->free_list_node._prev = curr;
