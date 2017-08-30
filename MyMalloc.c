@@ -131,7 +131,7 @@ static void * allocateObject(size_t size)
 
 	if(remainder < 8) size += remainder;	
 
-	size += sizeof(FreeObject);
+	size += sizeof(BoundaryTag);
 	
 //	if(size < 32){
 //		size = 32;
