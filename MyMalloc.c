@@ -148,7 +148,7 @@ static void * allocateObject(size_t size)
 				FreeObject * temp = curr;
 				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
 				temp->free_list_node._next->free_list_node._prev = temp->free_list_node._prev;
-				BoundaryTag * returnSize = temp->boundary_tag;
+				BoundaryTag * returnSize = &temp->boundary_tag;
 				setAllocated(returnSize, ALLOCATED);		
 				return (void*)temp;
 
