@@ -117,17 +117,17 @@ static void * allocateObject(size_t size)
 {
   // Make sure that allocator is initialized
 
-    if (!_initialized)
-    	initialize();
-        
-
+    	if (!_initialized)
+    		initialize();
+       
+	pthread_mutex_unlock(&mutex);
+	 
+	size += 8 % (8 - (size % 8));
 	size += sizeof(BoundaryTag);
 	
 	if(size < 32){
 		size = 32;
 	}
-
-	size += 8 % (8 - (size % 8));
 
 	FreeObject * curr = _freeList;	
 	
@@ -141,15 +141,15 @@ static void * allocateObject(size_t size)
 				setSize(&curr->boundary_tag, diff);
 				FreeObject * temp = (FreeObject *)((char *) curr + diff);
 				setSize(&temp->boundary_tag, size);
-				//add leftObj func.
 				setAllocated(&temp->boundary_tag, ALLOCATED);	
+				curr->free_list_node._next->boundary_tag._leftObjectSize = size;
 				return (void*)temp;	
 			}else{ // Don't split
 				FreeObject * temp = curr;
 				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
 				temp->free_list_node._next->free_list_node._prev = temp->free_list_node._prev;
-				BoundaryTag * returnSize = &temp->boundary_tag;
-				setAllocated(returnSize, ALLOCATED);		
+				setAllocated(&temp->boundary_tag, ALLOCATED);		
+				curr->free_list_node._next->boundary_tag._leftObjectSize = size;
 				return (void*)temp;
 
 		
@@ -166,9 +166,9 @@ static void * allocateObject(size_t size)
 	newChunk->free_list_node._prev = curr;
 	_freeList->free_list_node._next = curr;
 
-	allocateObject(size);			
+	allocateObject(size - sizeof(BoundaryTag));			
 	
-  pthread_mutex_unlock(&mutex);
+ // pthread_mutex_unlock(&mutex);
   return getMemoryFromOS(size);
 }
 

@@ -63,7 +63,7 @@ git-commit:
 	git add *.c *.h Makefile >> .local.git.out  || echo
 	git add *.txt 2>/dev/null >> .local.git.out  || echo
 	git commit -a -m 'Commit' >> .local.git.out || echo
-	git push --force
+	git push 
 
 clean:
 	rm -f *.o test0 test1 test1-1 test1-2 test1-3 test1-4 test2 test3 test4 test5 test6 test7 test8 test9 test10 MyMalloc.so core a.out *.out *.txt
