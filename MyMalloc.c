@@ -140,7 +140,7 @@ static void * allocateObject(size_t size)
 	while(curr != _freeList){
 		if(getSize(&curr->boundary_tag) >= size){
 			//Split the mem
-			if((getSize(&curr->boundary_tag) - size) >= sizeof(FreeObject) + 8){
+			if((getSize(&curr->boundary_tag) - size) >= sizeof(FreeObject)){
 
 				size_t diff = getSize(&curr->boundary_tag) - size;
 				setSize(&curr->boundary_tag, diff);
