@@ -120,7 +120,7 @@ static void * allocateObject(size_t size)
     	if (!_initialized)
     		initialize();
        
-	pthread_mutex_unlock(&mutex);
+	//pthread_mutex_unlock(&mutex);
 	
 	if(size == 0 || size > (ARENA_SIZE - (2*sizeof(BoundaryTag)))){
 		errno = ENOMEM;
@@ -177,10 +177,10 @@ static void * allocateObject(size_t size)
 	_freeList->free_list_node._next->free_list_node._prev = newChunk;
 	_freeList->free_list_node._next = newChunk;
 
-	size_t diffSize = size - sizeof(FreeObject);
+	size_t diffSize = size - sizeof(BoundaryTag);
 	allocateObject(diffSize);			
 	
-//  pthread_mutex_unlock(&mutex);
+  pthread_mutex_unlock(&mutex);
   return getMemoryFromOS(size);
 }
 
