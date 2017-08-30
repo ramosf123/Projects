@@ -176,7 +176,8 @@ static void * allocateObject(size_t size)
 	curr->free_list_node._prev = newChunk;
 	_freeList->free_list_node._next = newChunk;
 
-	allocateObject(size - sizeof(BoundaryTag));			
+	size_t diffSize = size - sizeof(BoundaryTag);
+	allocateObject(diffSize);			
 	
  // pthread_mutex_unlock(&mutex);
   return getMemoryFromOS(size);
