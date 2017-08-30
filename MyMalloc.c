@@ -133,9 +133,9 @@ static void * allocateObject(size_t size)
 
 	size += sizeof(FreeObject);
 	
-	if(size < 32){
-		size = 32;
-	}
+//	if(size < 32){
+//		size = 32;
+//	}
 
 	//pointer used 
 	FreeObject * curr = _freeList;	
@@ -148,10 +148,10 @@ static void * allocateObject(size_t size)
 
 				size_t diff = getSize(&curr->boundary_tag) - size;
 				setSize(&curr->boundary_tag, diff);
-				FreeObject * temp = (FreeObject *)((char *) curr + diff);
+				FreeObject * temp = (FreeObject *)((char *) curr + diff + sizeof(FreeObject));
 				setSize(&temp->boundary_tag, size);
 				setAllocated(&temp->boundary_tag, ALLOCATED);	
-				curr->free_list_node._next->boundary_tag._leftObjectSize = size;
+				//curr->free_list_node._next->boundary_tag._leftObjectSize = size;
 				temp->boundary_tag._leftObjectSize = diff;
 				return (void*)temp;	
 			}else{ // Don't split
@@ -159,7 +159,7 @@ static void * allocateObject(size_t size)
 				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
 				temp->free_list_node._next->free_list_node._prev = temp->free_list_node._prev;
 				setAllocated(&temp->boundary_tag, ALLOCATED);		
-				curr->free_list_node._next->boundary_tag._leftObjectSize = size;
+				//curr->free_list_node._next->boundary_tag._leftObjectSize = size;
 				return (void*)temp;
 
 		
@@ -172,9 +172,9 @@ static void * allocateObject(size_t size)
 	setSize(&newChunk->boundary_tag, ARENA_SIZE - (2 * sizeof(BoundaryTag)));
 	newChunk->boundary_tag._leftObjectSize = 0; 
 	setAllocated(&newChunk->boundary_tag, NOT_ALLOCATED);		
-	newChunk->free_list_node._next = curr->free_list_node._next;
+	newChunk->free_list_node._next = _freeList->free_list_node._next;
 	newChunk->free_list_node._prev = _freeList;
-	curr->free_list_node._prev = newChunk;
+	_freeList->free_list_node._next->free_list_node._prev = newChunk;
 	_freeList->free_list_node._next = newChunk;
 
 	size_t diffSize = size - sizeof(FreeObject);
