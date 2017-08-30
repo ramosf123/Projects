@@ -127,7 +127,10 @@ static void * allocateObject(size_t size)
 		return NULL;
 	}	
  
-	size += 8 % (8 - (size % 8));
+	size_t remainder = 8 - (size % 8);
+
+	if(remainder < 8) size += remainder;	
+
 	size += sizeof(BoundaryTag);
 	
 	if(size < 32){
@@ -148,6 +151,7 @@ static void * allocateObject(size_t size)
 				setSize(&temp->boundary_tag, size);
 				setAllocated(&temp->boundary_tag, ALLOCATED);	
 				curr->free_list_node._next->boundary_tag._leftObjectSize = size;
+				temp->boundary_tag._leftObjectSize = diff;
 				return (void*)temp;	
 			}else{ // Don't split
 				FreeObject * temp = curr;
@@ -169,6 +173,7 @@ static void * allocateObject(size_t size)
 	setAllocated(&newChunk->boundary_tag, NOT_ALLOCATED);		
 	newChunk->free_list_node._next = curr->free_list_node._next;
 	newChunk->free_list_node._prev = _freeList;
+	curr->free_list_node._prev = newChunk;
 	_freeList->free_list_node._next = newChunk;
 
 	allocateObject(size - sizeof(BoundaryTag));			
