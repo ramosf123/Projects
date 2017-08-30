@@ -131,7 +131,7 @@ static void * allocateObject(size_t size)
 
 	if(remainder < 8) size += remainder;	
 
-	size += sizeof(BoundaryTag);
+	size += sizeof(FreeObject);
 	
 	if(size < 32){
 		size = 32;
@@ -177,7 +177,7 @@ static void * allocateObject(size_t size)
 	curr->free_list_node._prev = newChunk;
 	_freeList->free_list_node._next = newChunk;
 
-	size_t diffSize = size - sizeof(BoundaryTag);
+	size_t diffSize = size - sizeof(FreeObject);
 	allocateObject(diffSize);			
 	
   pthread_mutex_unlock(&mutex);
