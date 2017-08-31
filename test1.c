@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "MyMalloc.h"
 
-int allocations = 65534;
+int allocations = 65535;
 
 int main() {
   printf("\n---- Running test1 ---\n");
