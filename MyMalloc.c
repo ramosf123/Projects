@@ -179,10 +179,10 @@ static void * allocateObject(size_t size)
 	_freeList->free_list_node._next = newChunk;
 
 	size_t diffSize = size - sizeof(BoundaryTag);
-	allocateObject(diffSize);			
+			
 	
   
-  	return allocateObject(size);
+  	return allocateObject(diffSize);
 }
 
 /**
