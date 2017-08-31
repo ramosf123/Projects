@@ -153,14 +153,14 @@ static void * allocateObject(size_t size)
 				setAllocated(&temp->boundary_tag, ALLOCATED);	
 				//curr->free_list_node._next->boundary_tag._leftObjectSize = size;
 				temp->boundary_tag._leftObjectSize = diff;
-				return (void*)temp;	
+				return temp;	
 			}else{ // Don't split
 				FreeObject * temp = curr;
 				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
 				temp->free_list_node._next->free_list_node._prev = temp->free_list_node._prev;
 				setAllocated(&temp->boundary_tag, ALLOCATED);		
 				//curr->free_list_node._next->boundary_tag._leftObjectSize = size;
-				return (void*)temp;
+				return temp;
 
 		
 			}
