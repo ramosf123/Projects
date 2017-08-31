@@ -182,7 +182,7 @@ static void * allocateObject(size_t size)
 	allocateObject(diffSize);			
 	
   
-  	return getMemoryFromOS(size);
+  	return allocateObject(size);
 }
 
 /**
