@@ -127,12 +127,13 @@ static void * allocateObject(size_t size)
 		return NULL;
 	}	
  
+	//Step 2
+	// real_size = roundup8(req size) + sizeof(header)
 	size_t remainder = 8 - (size % 8);
-
 	if(remainder < 8) size += remainder;	
-
 	size += sizeof(BoundaryTag);
-	
+
+	//Step 3
 	if(size < 32){
 		size = 32;
 	}
@@ -145,7 +146,7 @@ static void * allocateObject(size_t size)
 		if(getSize(&curr->boundary_tag) >= size){
 			//Split the mem
 			if((getSize(&curr->boundary_tag) - size) >= sizeof(FreeObject)){
-
+			
 				size_t diff = getSize(&curr->boundary_tag) - size;
 				setSize(&curr->boundary_tag, diff);
 				FreeObject * temp = (FreeObject *)((char *) curr + diff);
@@ -181,7 +182,7 @@ static void * allocateObject(size_t size)
 	allocateObject(diffSize);			
 	
   
-  return getMemoryFromOS(size);
+  	return getMemoryFromOS(size);
 }
 
 /**
