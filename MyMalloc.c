@@ -204,7 +204,7 @@ static void freeObject(void *ptr)
     FreeObject * rightNbgr = (FreeObject *)((char *)curr + getSize(&curr->boundary_tag));
     
     if(isAllocated(leftNgbr) || isAllocated(rightNbgr)) {
-        if (!isAllocated(leftNgbr) && isAllocated(rightNbgr)) {
+        if (!isAllocated(leftNgbr->boundary_tag) && isAllocated(rightNbgr->boundary_tag)) {
             /*
              1. Get the size of the left and mid(curr) and add them to get the new size
              2. Set the size of left to the new size
@@ -220,7 +220,7 @@ static void freeObject(void *ptr)
             curr->free_list_node._next->free_list_node._prev = curr->free_list_node._prev;
             leftNgbr->free_list_node._next = curr->free_list_node._next;
             
-        }else if(isAllocated(leftNgbr) && !isAllocated(rightNbgr)) {
+        }else if(isAllocated(leftNgbr->boundary_tag) && !isAllocated(rightNbgr->boundary_tag)) {
             //size_t newSize = getSize(&rightNbgr->boundary_tag) + getSize(&curr->boundary_tag);
             //setSize(&curr->boundary_tag, newSize);
             //setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
