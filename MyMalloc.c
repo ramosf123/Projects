@@ -226,7 +226,7 @@ static void freeObject(void *ptr)
             FreeObject * nextToRight = (FreeObject *)((char *) rightNgbr + getSize(&rightNgbr->boundary_tag));
             nextToRight->boundary_tag._leftObjectSize = newSize;
             rightNgbr->free_list_node._prev->free_list_node._next = curr;
-            rightNgbr->free_list_node._next->free_list_node._prev = rightNgb;
+            rightNgbr->free_list_node._next->free_list_node._prev = curr;
             return;
             
         }if (isAllocated(&leftNgbr->boundary_tag) && isAllocated(&rightNgbr->boundary_tag)) { //isAllocated(leftNgbr) && isAllocated(rightNgbr)
