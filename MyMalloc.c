@@ -210,27 +210,31 @@ static void freeObject(void *ptr)
              2. Set the size of left to the new size
              3. Change the allocation of curr to NOT_ALLOCATED
              4. Set the right leftObjectSize to the new size
-             5. Remove the curr from freeList
              */
             size_t newSize = getSize(&leftNgbr->boundary_tag) + getSize(&curr->boundary_tag);
             setSize(&leftNgbr->boundary_tag, newSize);
             setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
             rightNgbr->boundary_tag._leftObjectSize = newSize;
-            curr->free_list_node._prev->free_list_node._next = curr->free_list_node._next;
-            curr->free_list_node._next->free_list_node._prev = curr->free_list_node._prev;
-            leftNgbr->free_list_node._next = curr->free_list_node._next;
+            return;
             
-        }else if(isAllocated(&leftNgbr->boundary_tag) && !isAllocated(&rightNgbr->boundary_tag)) {
-            //size_t newSize = getSize(&rightNbgr->boundary_tag) + getSize(&curr->boundary_tag);
-            //setSize(&curr->boundary_tag, newSize);
-            //setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
-            //rightNbgr
+        }
+        if(isAllocated(&leftNgbr->boundary_tag) && !isAllocated(&rightNgbr->boundary_tag)) {
+            size_t newSize = getSize(&rightNgbr->boundary_tag) + getSize(&curr->boundary_tag);
+            setSize(&curr->boundary_tag, newSize);
+            setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
+            //Get the object ahead of the rightNgbr to change its leftObjectSize
+            FreeObject * nextToRight = (FreeObject *)((char *) rightNgbr + getSize(&rightNgbr->boundary_tag));
+            nextToRight->boundary_tag._leftObjectSize = newSize;
+            rightNgbr->free_list_node._prev->free_list_node._next = rightNgbr->free_list_node._next;
+            rightNgbr->free_list_node._next->free_list_node._prev = rightNgbr->free_list_node._prev;
+            return;
             
-        }else { //isAllocated(leftNgbr) && isAllocated(rightNgbr)
+        }if (isAllocated(&leftNgbr->boundary_tag) && isAllocated(&rightNgbr->boundary_tag)) { //isAllocated(leftNgbr) && isAllocated(rightNgbr)
             curr->free_list_node._prev = _freeList;
             curr->free_list_node._next = _freeList;
             _freeList->free_list_node._next->free_list_node._prev = curr;
             _freeList->free_list_node._next = curr;
+            return;
         }
     }else { //!isAllocated(leftNgbr) && !isAllocated(rightNgbr)
    
