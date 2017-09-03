@@ -169,18 +169,20 @@ static void * allocateObject(size_t size)
 		curr = curr->free_list_node._next;
 	}
 	
+	//init newChunk
 	FreeObject * newChunk = getNewChunk(ARENA_SIZE);	
 	setSize(&newChunk->boundary_tag, ARENA_SIZE - (2 * sizeof(BoundaryTag)));
 	newChunk->boundary_tag._leftObjectSize = 0; 
 	setAllocated(&newChunk->boundary_tag, NOT_ALLOCATED);		
+
+	//hook ptrs up
 	newChunk->free_list_node._next = _freeList->free_list_node._next;
 	newChunk->free_list_node._prev = _freeList;
 	_freeList->free_list_node._next->free_list_node._prev = newChunk;
 	_freeList->free_list_node._next = newChunk;
 
 	size_t diffSize = size - sizeof(BoundaryTag);
-			
-	
+
   
   	return allocateObject(diffSize);
 }
@@ -195,7 +197,45 @@ static void * allocateObject(size_t size)
  */
 static void freeObject(void *ptr)
 {
-  return;
+    //puts the ptr at the top at the boundary_tag
+    FreeObject * curr = (FreeObject *) ptr - sizeof(BoundaryTag);
+    
+    FreeObject * leftNgbr = (FreeObject *)((char *)curr - (curr->boundary_tag._leftObjectSize));
+    FreeObject * rightNbgr = (FreeObject *)((char *)curr + getSize(&curr->boundary_tag));
+    
+    if(isAllocated(leftNgbr) || isAllocated(rightNbgr)) {
+        if (!isAllocated(leftNgbr) && isAllocated(rightNbgr)) {
+            /*
+             1. Get the size of the left and mid(curr) and add them to get the new size
+             2. Set the size of left to the new size
+             3. Change the allocation of curr to NOT_ALLOCATED
+             4. Set the right leftObjectSize to the new size
+             5. Remove the curr from freeList
+             */
+            size_t newSize = getSize(&leftNgbr->boundary_tag) + getSize(&curr->boundary_tag);
+            setSize(&leftNgbr->boundary_tag, newSize);
+            setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
+            rightNgbr->boundary_tag->_leftObjectSize = newSize;
+            curr->free_list_node._prev->free_list_node._next = curr->free_list_node._next;
+            curr->free_list_node._next->free_list_node._prev = curr->free_list_node._prev;
+            leftNgbr->free_list_node._next = curr->free_list_node._next;
+            
+        }else if(isAllocated(leftNgbr) && !isAllocated(rightNbgr)) {
+            //size_t newSize = getSize(&rightNbgr->boundary_tag) + getSize(&curr->boundary_tag);
+            //setSize(&curr->boundary_tag, newSize);
+            //setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
+            //rightNbgr
+            
+        }else { //isAllocated(leftNgbr) && isAllocated(rightNgbr)
+            curr->free_list_node._prev = _freeList;
+            curr->free_list_node._next = _freeList;
+            _freeList->free_list_node._next->free_list_node._prev = curr;
+            _freeList->free_list_node._next = curr;
+        }
+    }else { //!isAllocated(leftNgbr) && !isAllocated(rightNgbr)
+   
+    }
+    
 }
 
 void print()
