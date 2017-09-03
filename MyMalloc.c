@@ -225,6 +225,8 @@ static void freeObject(void *ptr)
             //Get the object ahead of the rightNgbr to change its leftObjectSize
             FreeObject * nextToRight = (FreeObject *)((char *) rightNgbr + getSize(&rightNgbr->boundary_tag));
             nextToRight->boundary_tag._leftObjectSize = newSize;
+            curr->free_list_node._prev = rightNgbr->free_list_node._prev;
+            curr->free_list_node._next = rightNgbr->free_list_node._next;
             rightNgbr->free_list_node._prev->free_list_node._next = curr;
             rightNgbr->free_list_node._next->free_list_node._prev = curr;
             return;
