@@ -203,7 +203,7 @@ static void freeObject(void *ptr)
     FreeObject * leftNgbr = (FreeObject *)((char *)curr - (curr->boundary_tag._leftObjectSize));
     FreeObject * rightNbgr = (FreeObject *)((char *)curr + getSize(&curr->boundary_tag));
     
-    if(isAllocated(leftNgbr) || isAllocated(rightNbgr)) {
+    if(isAllocated(leftNgbr->boundary_tag) || isAllocated(rightNbgr->boundary_tag)) {
         if (!isAllocated(leftNgbr->boundary_tag) && isAllocated(rightNbgr->boundary_tag)) {
             /*
              1. Get the size of the left and mid(curr) and add them to get the new size
