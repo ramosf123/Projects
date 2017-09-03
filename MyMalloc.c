@@ -215,7 +215,7 @@ static void freeObject(void *ptr)
             size_t newSize = getSize(&leftNgbr->boundary_tag) + getSize(&curr->boundary_tag);
             setSize(&leftNgbr->boundary_tag, newSize);
             setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
-            rightNgbr->boundary_tag->_leftObjectSize = newSize;
+            rightNgbr->boundary_tag._leftObjectSize = newSize;
             curr->free_list_node._prev->free_list_node._next = curr->free_list_node._next;
             curr->free_list_node._next->free_list_node._prev = curr->free_list_node._prev;
             leftNgbr->free_list_node._next = curr->free_list_node._next;
