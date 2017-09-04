@@ -250,7 +250,7 @@ static void freeObject(void *ptr)
             
             //curr equals the leftNgbr to modify it and then change the size to the new one
             curr = leftNgbr;
-            setSize(&curr-<boundary_tag, newSize);
+            setSize(&curr->boundary_tag, newSize);
             
             //change the allocate status
             setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
