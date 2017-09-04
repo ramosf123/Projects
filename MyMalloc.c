@@ -224,11 +224,12 @@ static void freeObject(void *ptr)
             //change the allocate status
             setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
             
-            //curr next is the right's next
-            curr->free_list_node._next = rightNgbr->free_list_node._next;
-            
             //right's next previous is the current
             rightNgbr->free_list_node._next->free_list_node._prev = curr;
+            
+            //curr next is the right's next
+            curr->free_list_node._next = rightNgbr->free_list_node._next;
+
             
         }
         //add the ptr to the beginning of the freeList
