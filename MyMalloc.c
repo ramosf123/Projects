@@ -204,7 +204,14 @@ static void freeObject(void *ptr)
     FreeObject * rightNgbr = (FreeObject *)((char *)curr + getSize(&curr->boundary_tag));
     
     if(isAllocated(&leftNgbr->boundary_tag) || isAllocated(&rightNgbr->boundary_tag)) {
-        if (!isAllocated(&leftNgbr->boundary_tag) && isAllocated(&rightNgbr->boundary_tag)) {
+        if (isAllocated(&leftNgbr->boundary_tag) && isAllocated(&rightNgbr->boundary_tag)) { //isAllocated(leftNgbr) && isAllocated(rightNgbr)
+            curr->free_list_node._prev = _freeList;
+            curr->free_list_node._next = _freeList;
+            _freeList->free_list_node._next->free_list_node._prev = curr;
+            _freeList->free_list_node._next = curr;
+            return;
+        }
+        if (!isAllocated(&leftNgbr->boundary_tag)) {
             /*
              1. Get the size of the left and mid(curr) and add them to get the new size
              2. Set the size of left to the new size
@@ -214,7 +221,9 @@ static void freeObject(void *ptr)
             size_t newSize = getSize(&leftNgbr->boundary_tag) + getSize(&curr->boundary_tag);
             setSize(&leftNgbr->boundary_tag, newSize);
             setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
-            rightNgbr->boundary_tag._leftObjectSize = newSize;
+            curr->boundary_tag._leftObjectSize = leftNgbr->boundary_tag._leftObjectSize;
+            leftNgbr->free_list_node._prev = _freeList;
+            _freeList->free_list_node._next = leftNgbr;
             return;
             
         }
@@ -231,12 +240,6 @@ static void freeObject(void *ptr)
             rightNgbr->free_list_node._next->free_list_node._prev = curr;
             return;
             
-        }if (isAllocated(&leftNgbr->boundary_tag) && isAllocated(&rightNgbr->boundary_tag)) { //isAllocated(leftNgbr) && isAllocated(rightNgbr)
-            curr->free_list_node._prev = _freeList;
-            curr->free_list_node._next = _freeList;
-            _freeList->free_list_node._next->free_list_node._prev = curr;
-            _freeList->free_list_node._next = curr;
-            return;
         }
     }else { //!isAllocated(leftNgbr) && !isAllocated(rightNgbr)
    
