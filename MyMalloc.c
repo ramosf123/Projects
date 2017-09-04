@@ -232,7 +232,7 @@ static void freeObject(void *ptr)
             
         }
         //add the ptr to the beginning of the freeList
-        _freeListSentinel->free_list_node._next = curr;
+        _freeList->free_list_node._next = curr;
         curr->free_list_node._prev = &_freeListSentinel;
         
         return;
