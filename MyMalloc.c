@@ -223,7 +223,7 @@ static void freeObject(void *ptr)
             setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
             curr->boundary_tag._leftObjectSize = leftNgbr->boundary_tag._leftObjectSize;
             _freeList->free_list_node._next = leftNgbr;
-            leftNgbr->free_list_node._prev = &_freeList;
+            leftNgbr->free_list_node._prev = &_freeListSentinel;
             return;
             
         }
