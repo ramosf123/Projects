@@ -152,7 +152,7 @@ static void * allocateObject(size_t size)
 				FreeObject * temp = (FreeObject *)((char *) curr + diff);
 				setSize(&temp->boundary_tag, size);
 				setAllocated(&temp->boundary_tag, ALLOCATED);	
-				//curr->free_list_node._next->boundary_tag._leftObjectSize = size;
+				curr->boundary_tag._leftObjectSize = size;
 				temp->boundary_tag._leftObjectSize = diff;
 				return temp;	
 			}else{ // Don't split
