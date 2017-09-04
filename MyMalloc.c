@@ -222,22 +222,24 @@ static void freeObject(void *ptr)
             setSize(&leftNgbr->boundary_tag, newSize);
             setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
             curr->boundary_tag._leftObjectSize = leftNgbr->boundary_tag._leftObjectSize;
+            
             _freeList->free_list_node._next = leftNgbr;
             leftNgbr->free_list_node._prev = &_freeListSentinel;
             return;
             
         }
-        if(isAllocated(&leftNgbr->boundary_tag) && !isAllocated(&rightNgbr->boundary_tag)) {
+        if(!isAllocated(&rightNgbr->boundary_tag)) {
             size_t newSize = getSize(&rightNgbr->boundary_tag) + getSize(&curr->boundary_tag);
             setSize(&curr->boundary_tag, newSize);
             setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
             //Get the object ahead of the rightNgbr to change its leftObjectSize
             FreeObject * nextToRight = (FreeObject *)((char *) rightNgbr + getSize(&rightNgbr->boundary_tag));
             nextToRight->boundary_tag._leftObjectSize = newSize;
-            curr->free_list_node._prev = rightNgbr->free_list_node._prev;
+            
             curr->free_list_node._next = rightNgbr->free_list_node._next;
-            rightNgbr->free_list_node._prev->free_list_node._next = curr;
             rightNgbr->free_list_node._next->free_list_node._prev = curr;
+            _freeList->free_list_node._next = curr;
+            curr->free_list_node._prev = &_freeListSentinel;
             return;
             
         }
