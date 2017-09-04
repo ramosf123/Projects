@@ -272,12 +272,20 @@ static void freeObject(void *ptr)
             
         }
         //add the ptr to the beginning of the freeList
-        _freeList->free_list_node._next = curr;
+        _freeListSentinel->free_list_node._next = curr;
         curr->free_list_node._prev = &_freeListSentinel;
         
         return;
     }
     
+    
+    //if both aren't allocated then just add the curr ptr to the beginning of the freeList 
+    setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
+    curr->free_list_node._prev = _freeList;
+    curr->free_list_node._next = _freeList->free_list_node._next;
+    _freeList->free_list_node._next->free_list_node._prev = curr;
+    _freeList->free_list_node._next = curr;
+    return;
     
 }
 
