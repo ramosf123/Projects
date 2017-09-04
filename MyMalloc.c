@@ -204,6 +204,23 @@ static void freeObject(void *ptr)
     FreeObject * rightNgbr = (FreeObject *)((char *)curr + getSize(&curr->boundary_tag));
     
     if(!isAllocated(&leftNgbr->boundary_tag) || !isAllocated(&rightNgbr->boundary_tag)){
+        
+        if(!isAllocated(&rightNgbr->boundary_tag)) {
+            //get new merged size and set the size to the curr
+            size_t newSize = getSize(&rightNgbr->boundary_tag) + getSize(&curr->boundary_tag);
+            setSize(&curr->boundary_tag, newSize);
+            
+            //change the allocate status
+            setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
+            
+            //curr next is the right's next
+            curr->free_list_node._next = rightNgbr->free_list_node._next;
+            
+            //right's next previous is the current
+            rightNgbr->free_list_node._next->free_list_node._prev = curr;
+            
+            
+        }
         if(!isAllocated(&leftNgbr->boundary_tag)){
             //get the new merged sizes
             size_t newSize = getSize(&leftNgbr->boundary_tag) + getSize(&curr->boundary_tag);
@@ -216,22 +233,7 @@ static void freeObject(void *ptr)
             setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
             
         }
-        if(!isAllocated(&rightNgbr->boundary_tag)) {
-            //get new merged size and set the size to the curr
-            size_t newSize = getSize(&rightNgbr->boundary_tag) + getSize(&curr->boundary_tag);
-            setSize(&curr->boundary_tag, newSize);
-            
-            //change the allocate status
-            setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
-            
-            //right's next previous is the current
-            rightNgbr->free_list_node._next->free_list_node._prev = curr;
-            
-            //curr next is the right's next
-            curr->free_list_node._next = rightNgbr->free_list_node._next;
 
-            
-        }
         //add the ptr to the beginning of the freeList
         _freeList->free_list_node._next = curr;
         curr->free_list_node._prev = &_freeListSentinel;
