@@ -262,7 +262,7 @@ static void freeObject(void *ptr)
             setSize(&curr->boundary_tag, newSize);
             
             //change the allocate status
-            setAllocated(&curr-<boundary_tag, NOT_ALLOCATED);
+            setAllocated(&curr->boundary_tag, NOT_ALLOCATED);
             
             //curr next is the right's next
             curr->free_list_node._next = rightNgbr->free_list_node._next;
