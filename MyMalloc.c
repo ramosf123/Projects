@@ -198,7 +198,7 @@ static void * allocateObject(size_t size)
 static void freeObject(void *ptr)
 {
     //puts the ptr at the top at the boundary_tag
-    FreeObject * curr = (FreeObject *) ptr - sizeof(BoundaryTag);
+    FreeObject * curr = (FreeObject *) ((char *)ptr - sizeof(BoundaryTag));
     
     FreeObject * leftNgbr = (FreeObject *)((char *)curr - (curr->boundary_tag._leftObjectSize));
     FreeObject * rightNgbr = (FreeObject *)((char *)curr + getSize(&curr->boundary_tag));
