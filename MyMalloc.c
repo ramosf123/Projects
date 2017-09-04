@@ -154,7 +154,7 @@ static void * allocateObject(size_t size)
 				setAllocated(&temp->boundary_tag, ALLOCATED);
 				temp->boundary_tag._leftObjectSize = diff;
                 
-                FreeObject * rightObject = (FreeObject * )((char *)temp + getSize(&temp->boundary_tag));
+                BoundaryTag * rightObject = (BoundaryTag * )((char *)temp + getSize(&temp->boundary_tag));
                 if (isAllocated(&rightObject->boundary_tag)) {
                     rightObject->boundary_tag._leftObjectSize = size;
                 }
