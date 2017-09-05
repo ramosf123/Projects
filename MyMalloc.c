@@ -157,8 +157,8 @@ static void * allocateObject(size_t size)
 				setAllocated(&temp->boundary_tag, ALLOCATED);
 				temp->boundary_tag._leftObjectSize = diff;
                 
-                BoundaryTag * rightObject = (BoundaryTag *)((char *)temp + getSize(&temp->boundary_tag));
-                rightObject->_leftObjectSize = size;
+                //BoundaryTag * rightObject = (BoundaryTag *)((char *)temp + getSize(&temp->boundary_tag));
+                //rightObject->_leftObjectSize = size;
                 
                 pthread_mutex_unlock(&mutex);
 				return temp;
