@@ -122,17 +122,19 @@ static void * allocateObject(size_t size)
        
 	pthread_mutex_unlock(&mutex);
 	
-	if(size == 0 || size > ((ARENA_SIZE) - (3*sizeof(BoundaryTag)))){
-		errno = ENOMEM;
-        
-		return NULL;
-	}	
+
  
 	//Step 2
 	// real_size = roundup8(req size) + sizeof(header)
 	size_t remainder = 8 - (size % 8);
 	if(remainder < 8) size += remainder;	
 	size += sizeof(BoundaryTag);
+    
+    if(size == 0 || size > ((ARENA_SIZE) - (3*sizeof(BoundaryTag)))){
+        errno = ENOMEM;
+        
+        return NULL;
+    }	
 
 	//Step 3
 	if(size < 32){
