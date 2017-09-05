@@ -124,7 +124,7 @@ static void * allocateObject(size_t size)
 	
 	if(size == 0 || size > ((ARENA_SIZE) - (3*sizeof(BoundaryTag)))){
 		errno = ENOMEM;
-        pthread_mutex_unlock(&mutex);
+        
 		return NULL;
 	}	
  
@@ -152,25 +152,21 @@ static void * allocateObject(size_t size)
 				setSize(&curr->boundary_tag, diff);
                 
 				FreeObject * temp = (FreeObject *)((char *) curr + diff);
-                BoundaryTag * rightObject = (BoundaryTag *)((char *)temp + getSize(&temp->boundary_tag));
+                		BoundaryTag * rightObject = (BoundaryTag *)(temp + getSize(&temp->boundary_tag);
                 
 				setSize(&temp->boundary_tag, size);
 				setAllocated(&temp->boundary_tag, ALLOCATED);
 				temp->boundary_tag._leftObjectSize = diff;
                 
-                rightObject->_leftObjectSize = size;
-                /* hunter@openrobotics.org */
-                pthread_mutex_unlock(&mutex);
-				return temp;
+                		rightObject->_leftObjectSize = size;
+				return (void *)((char *)temp + sizeof(BoundaryTag));
 			}else{ // Don't split
 				FreeObject * temp = curr;
 				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
 				temp->free_list_node._next->free_list_node._prev = temp->free_list_node._prev;
 				setAllocated(&temp->boundary_tag, ALLOCATED);		
 				//curr->free_list_node._next->boundary_tag._leftObjectSize = size;
-                
-                pthread_mutex_unlock(&mutex);
-				return temp;
+				 return (char *)temp + sizeof(BoundaryTag);
 
 		
 			}
@@ -189,6 +185,10 @@ static void * allocateObject(size_t size)
 	newChunk->free_list_node._prev = _freeList;
 	_freeList->free_list_node._next->free_list_node._prev = newChunk;
 	_freeList->free_list_node._next = newChunk;
+
+	if(_freeList->free_list_node._prev = _freeList){
+		_freeList->free_list_node._prev = newChunk;
+	}	
 
 	size_t diffSize = size - sizeof(BoundaryTag);
 
