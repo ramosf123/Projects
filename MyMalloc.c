@@ -152,14 +152,14 @@ static void * allocateObject(size_t size)
 				setSize(&curr->boundary_tag, diff);
                 
 				FreeObject * temp = (FreeObject *)((char *) curr + diff);
+                BoundaryTag * rightObject = (BoundaryTag *)((char *)temp + getSize(&temp->boundary_tag));
                 
 				setSize(&temp->boundary_tag, size);
 				setAllocated(&temp->boundary_tag, ALLOCATED);
 				temp->boundary_tag._leftObjectSize = diff;
                 
-                //BoundaryTag * rightObject = (BoundaryTag *)((char *)temp + getSize(&temp->boundary_tag));
-                //rightObject->_leftObjectSize = size;
-                
+                rightObject->_leftObjectSize = size;
+                /* hunter@openrobotics.org */
                 pthread_mutex_unlock(&mutex);
 				return temp;
 			}else{ // Don't split
