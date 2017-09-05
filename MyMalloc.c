@@ -160,13 +160,16 @@ static void * allocateObject(size_t size)
                 BoundaryTag * rightObject = (BoundaryTag *)((char *)temp + getSize(&temp->boundary_tag));
                 rightObject->_leftObjectSize = size;
                 
-				return temp;	
+                pthread_mutex_unlock(&mutex);
+				return temp;
 			}else{ // Don't split
 				FreeObject * temp = curr;
 				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
 				temp->free_list_node._next->free_list_node._prev = temp->free_list_node._prev;
 				setAllocated(&temp->boundary_tag, ALLOCATED);		
 				//curr->free_list_node._next->boundary_tag._leftObjectSize = size;
+                
+                pthread_mutex_unlock(&mutex);
 				return temp;
 
 		
