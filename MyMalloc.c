@@ -122,7 +122,7 @@ static void * allocateObject(size_t size)
        
 	pthread_mutex_unlock(&mutex);
 	
-	if(size == 0 || size > (ARENA_SIZE) - (3*sizeof(BoundaryTag))){
+	if(size == 0 || size > ((ARENA_SIZE) - (3*sizeof(BoundaryTag)))){
 		errno = ENOMEM;
         pthread_mutex_unlock(&mutex);
 		return NULL;
@@ -150,14 +150,15 @@ static void * allocateObject(size_t size)
 			
 				size_t diff = getSize(&curr->boundary_tag) - size;
 				setSize(&curr->boundary_tag, diff);
+                
 				FreeObject * temp = (FreeObject *)((char *) curr + diff);
+                
 				setSize(&temp->boundary_tag, size);
 				setAllocated(&temp->boundary_tag, ALLOCATED);
 				temp->boundary_tag._leftObjectSize = diff;
                 
-                //BoundaryTag * rightObject = (BoundaryTag *)((char *)temp + getSize(&temp->boundary_tag));
-                //rightObject->_leftObjectSize = size;
-                
+                BoundaryTag * rightObject = (BoundaryTag *)((char *)temp + getSize(&temp->boundary_tag));
+                rightObject->_leftObjectSize = size;
                 
 				return temp;	
 			}else{ // Don't split
