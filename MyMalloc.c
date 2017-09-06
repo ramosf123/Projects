@@ -123,10 +123,10 @@ static void * allocateObject(size_t size)
 	pthread_mutex_unlock(&mutex);
 	
 
-    if (size == 0) {
-        errno = ENOMEM;
-        return NULL;
-    }
+	if (size == 0) {
+        	errno = ENOMEM;
+        	return NULL;
+    	}
  
 	//Step 2
 	// real_size = roundup8(req size) + sizeof(header)
@@ -134,11 +134,10 @@ static void * allocateObject(size_t size)
 	if(remainder < 8) size += remainder;	
 	size += sizeof(BoundaryTag);
     
-    if(size > ((ARENA_SIZE) - (3*sizeof(BoundaryTag)))){
-        errno = ENOMEM;
-        
-        return NULL;
-    }
+    	if(size > ((ARENA_SIZE) - (3*sizeof(BoundaryTag)))){
+        	errno = ENOMEM;
+                return NULL;
+    	}
 
 	//Step 3
 	if(size < 32){
@@ -165,7 +164,7 @@ static void * allocateObject(size_t size)
 				temp->boundary_tag._leftObjectSize = diff;
                 
                 		rightObject->_leftObjectSize = size;
-				return (void *)((char *)temp + sizeof(BoundaryTag));
+				return (char *)temp + sizeof(BoundaryTag);
 			}else{ // Don't split
 				FreeObject * temp = curr;
 				temp->free_list_node._prev->free_list_node._next = temp->free_list_node._next;
