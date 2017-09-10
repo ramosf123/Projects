@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tip Calculator</title>
+
+<script type="text/javascript" src="index.js"></script>
+
+  <style>
+
+  body {
+    font-family: sans-serif;
+  }
+
+  .inBox   {
+    position: absolute;
+    left: 150px;
+  }
+
+  #chkAmt {
+    position: absolute;
+    top: 15px;
+  }
+
+  #salesTaxPrct {
+    position: absolute;
+    top: 50px;
+  }
+
+  #tipsPrct {
+    position: absolute;
+    top: 80px;
+  }
+
+  #salesTaxAmt {
+    position: absolute;
+    top: 110px;
+  }
+
+  #tipAmt {
+    position: absolute;
+    top: 140px;
+  }
+
+  #txtChkAmt {
+    position: absolute;
+    top: 15px;
+  }
+
+  #txtSalesTaxPrct {
+    position: absolute;
+    top: 45px;
+  }
+
+  #txtTipsPrct {
+    position: absolute;
+    top: 75px;
+  }
+
+  #txtSalesTaxAmt {
+    position: absolute;
+    top: 105px;
+  }
+
+  #txtTipAmt {
+    position: absolute;
+    top: 135px;
+  }
+
+  #btnTipPreTax {
+    position: absolute;
+    left: 151px;
+    top: 160px;
+    height: 25px;
+    width: 147px;
+    text-align: center;
+  }
+
+  #btnTipOnTotal {
+    position: absolute;
+    left: 151px;
+    top: 190px;
+    height: 25px;
+    width: 147px;
+    text-align: center;
+  }
+
+  </style>
+
+</head>
+<body onload="body_onload()">
+
+  <label id="chkAmt">Check Amount</label>
+  <input type="text" id="txtChkAmt" class="inBox">
+
+  <br>
+
+  <label id="salesTaxPrct">Sales Tax %</label>
+  <input type="text" id="txtSalesTaxPrct" class="inBox" value="7.00">
+
+  <br>
+
+  <label  id="tipsPrct">Tip %</label>
+  <input type="text" class="inBox" id="txtTipsPrct" value="18.00">
+
+  <br>
+
+  <label id="salesTaxAmt">Sales Tax</label>
+  <input type="text" class="inBox" id="txtSalesTaxAmt" value=" " readonly>
+
+  <br>
+
+  <label id="tipAmt">Tip Amount</label>
+  <input type="text" class="inBox" id="txtTipAmt" value=" " readonly>
+
+  <button type="button" value="Tip Pre Tax" id="btnTipPreTax">Tip Pre Tax
+  </button>
+
+  <button type="button" value="Tip On Total" id="btnTipOnTotal">Tip On Total
+  </button>
+
+
+</body>
+</html>
