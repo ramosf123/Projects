@@ -3,4 +3,4 @@ MyMalloc
 
 Created my own malloc() using C
 
-Wrote the allocateObject() function and the freeObject()
+Wrote the allocateObject() and the freeObject() functions
