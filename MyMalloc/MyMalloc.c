@@ -72,7 +72,7 @@ static FreeObject * getNewChunk(size_t size)
   return (FreeObject *)((char *)mem + sizeof(BoundaryTag));
 }
 
-/**
+/** 
  * @brief If no blocks have been allocated, get more memory and 
  * set up the free list
  */
